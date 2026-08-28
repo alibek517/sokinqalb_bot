@@ -25,11 +25,11 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID")  # ixtiyoriy — bo'sh bo'lishi mumkin
 ADMIN_CHAT_ID = int(ADMIN_CHAT_ID) if ADMIN_CHAT_ID and ADMIN_CHAT_ID.strip().isdigit() else None
 
-# Bir nechta admin ID lari: .env da ADMIN_IDS="12345,67890" yoki ADMIN_CHAT_ID dan olinadi
-_raw_admin_ids = os.getenv("ADMIN_IDS", "")
+# Bir nechta admin ID lari: .env da ADMIN_IDS="12345,67890" yoki ADMIN_ID="12345,67890" dan olinadi
+_raw_admin_ids = os.getenv("ADMIN_IDS", "") or os.getenv("ADMIN_ID", "")
 ADMIN_IDS: list[int] = []
 if _raw_admin_ids:
-    for part in _raw_admin_ids.split(","):
+    for part in str(_raw_admin_ids).split(","):
         part = part.strip()
         if part.isdigit():
             ADMIN_IDS.append(int(part))

@@ -26,6 +26,6 @@ scratch/
 .system_generated/
 sizningrasmlar/
 
-# Node / Sub-apps if separate
-sokinqalb-uz/node_modules/
-sokinqalb-uz/dist/
+# Frontend Web App (alohida repozitoriyda bo'lgani uchun butunlay chiqarib tashlandi)
+sokinqalb-uz/
+sokinqalb-uz

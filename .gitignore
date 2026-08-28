@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Environment Variables & Secrets
+.env
+.env.local
+*.secret
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+database.db
+
+# Logs & temp
+*.log
+scratch/
+.system_generated/
+sizningrasmlar/
+
+# Node / Sub-apps if separate
+sokinqalb-uz/node_modules/
+sokinqalb-uz/dist/

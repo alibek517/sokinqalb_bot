@@ -635,7 +635,10 @@ async def cb_adm_team_view(callback: CallbackQuery, state: FSMContext) -> None:
         await callback.answer("Mutaxassis topilmadi!", show_alert=True)
         return
 
-    photo_status = "✅ Yuklangan" if member.get("photo_file_id") else "⚪️ Hali rasm yuklanmagan"
+    from handlers.live_chat import resolve_team_member_photo
+    photo_obj = resolve_team_member_photo(member.get("member_key", ""), member.get("photo_file_id"), member.get("name", ""))
+    photo_status = "✅ Mavjud" if photo_obj else "⚪️ Hali rasm yuklanmagan"
+
     card_text = (
         f"{member.get('avatar_icon', '👨‍⚕️')} <b>{member['name'].upper()}</b>\n"
         f"<i>{member['title']} ({member['experience']})</i>\n"
@@ -648,12 +651,12 @@ async def cb_adm_team_view(callback: CallbackQuery, state: FSMContext) -> None:
     )
 
     kb = admin_team_member_manage_kb(member["id"])
-    if member.get("photo_file_id"):
+    if photo_obj:
         try:
             if len(card_text) <= 1000:
-                await callback.message.answer_photo(photo=member["photo_file_id"], caption=card_text, parse_mode="HTML", reply_markup=kb)
+                await callback.message.answer_photo(photo=photo_obj, caption=card_text, parse_mode="HTML", reply_markup=kb)
             else:
-                await callback.message.answer_photo(photo=member["photo_file_id"], caption=f"👨‍⚕️ <b>{member['name']}</b>", parse_mode="HTML")
+                await callback.message.answer_photo(photo=photo_obj, caption=f"👨‍⚕️ <b>{member['name']}</b>", parse_mode="HTML")
                 await callback.message.answer(card_text, parse_mode="HTML", reply_markup=kb)
         except Exception:
             await callback.message.answer(card_text, parse_mode="HTML", reply_markup=kb)

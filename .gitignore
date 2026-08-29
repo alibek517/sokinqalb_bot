@@ -24,7 +24,6 @@ database.db
 *.log
 scratch/
 .system_generated/
-sizningrasmlar/
 
 # Frontend Web App (alohida repozitoriyda bo'lgani uchun butunlay chiqarib tashlandi)
 sokinqalb-uz/

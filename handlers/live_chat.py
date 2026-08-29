@@ -3,10 +3,11 @@
 Ushbu modul foydalanuvchilarning barcha murojaatlari va xabarlarini adminga real vaqt rejimida
 yetkazadi va adminning bot orqali qaytargan javoblarini foydalanuvchiga yuboradi.
 """
+import os
 import re
 import logging
 from aiogram import Router, F, Bot
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, FSInputFile, URLInputFile
 from aiogram.fsm.context import FSMContext
 
 import database as db
@@ -27,7 +28,67 @@ logger = logging.getLogger(__name__)
 
 
 # =========================================================================
-# SOKIN QALB PSIXOTERAPEVTLAR JAMOASI MA'LUMOTLARI
+# SOKIN QALB PSIXOTERAPEVTLAR JAMOASI RASMLARI & MA'LUMOTLARI
+# =========================================================================
+
+MEMBER_PHOTOS = {
+    "furqat": {
+        "local": [
+            "images/furqat_bagibekov.png",
+            "sokinqalb-uz/public/furqat_bagibekov.png",
+            "sokinqalb-uz/dist/furqat_bagibekov.png",
+            "images/furqat_hero.png",
+        ],
+        "url": "https://sokinqalb.uz/furqat_bagibekov.png"
+    },
+    "dilfuza": {
+        "local": [
+            "images/dilfuza_muminova.png",
+            "sokinqalb-uz/public/dilfuza_muminova.png",
+            "sokinqalb-uz/dist/dilfuza_muminova.png"
+        ],
+        "url": "https://sokinqalb.uz/dilfuza_muminova.png"
+    },
+    "temur": {
+        "local": [
+            "images/temur_baydjanov.png",
+            "sokinqalb-uz/public/temur_baydjanov.png",
+            "sokinqalb-uz/dist/temur_baydjanov.png"
+        ],
+        "url": "https://sokinqalb.uz/temur_baydjanov.png"
+    }
+}
+
+def resolve_team_member_photo(member_key: str, photo_file_id: str | None, member_name: str = ""):
+    """Mutaxassisning fotosuratini Telegram uchun FSInputFile, URLInputFile yoki file_id ko'rinishida qaytaradi."""
+    # 1. Telegram file_id (agar telegram orqali yuborilgan bo'lsa)
+    if photo_file_id and not photo_file_id.startswith("http") and not os.path.exists(photo_file_id):
+        return photo_file_id
+
+    # 2. Kalit yoki ism bo'yicha standart mutaxassis rasmini aniqlash
+    search_str = f"{member_key} {member_name}".lower()
+    for key, pinfo in MEMBER_PHOTOS.items():
+        if key in search_str:
+            for loc in pinfo["local"]:
+                if os.path.exists(loc):
+                    return FSInputFile(loc)
+            if pinfo.get("url"):
+                return URLInputFile(pinfo["url"])
+
+    # 3. Agar photo_file_id mahalliy fayl yoki URL bo'lsa
+    if photo_file_id:
+        if os.path.exists(photo_file_id):
+            return FSInputFile(photo_file_id)
+        if photo_file_id.startswith("http://") or photo_file_id.startswith("https://"):
+            return URLInputFile(photo_file_id)
+
+    # 4. Zaxira rasm (Furqat Bag'ibekov yoki Logo)
+    if os.path.exists("images/furqat_bagibekov.png"):
+        return FSInputFile("images/furqat_bagibekov.png")
+    if os.path.exists("images/logo.jpg"):
+        return FSInputFile("images/logo.jpg")
+
+    return None
 # =========================================================================
 
 TEAM_DATA = {
@@ -157,6 +218,7 @@ async def show_team_member_detail(callback: CallbackQuery) -> None:
     meth = member.get("methodology_text") or member.get("methodology", "")
     achs = member.get("achievements_text") or "\n".join(f"🏆 {a}" for a in member.get("achievements", []))
     photo_id = member.get("photo_file_id")
+    photo_obj = resolve_team_member_photo(member_key, photo_id, name)
 
     card_text = (
         f"{icon} <b>{name.upper()}</b>\n"
@@ -171,14 +233,19 @@ async def show_team_member_detail(callback: CallbackQuery) -> None:
 
     kb = team_member_detail_kb(member_key)
 
-    if photo_id:
+    if photo_obj:
         try:
             if len(card_text) <= 1000:
-                await callback.message.answer_photo(photo=photo_id, caption=card_text, parse_mode="HTML", reply_markup=kb)
+                await callback.message.answer_photo(photo=photo_obj, caption=card_text, parse_mode="HTML", reply_markup=kb)
             else:
-                await callback.message.answer_photo(photo=photo_id, caption=f"{icon} <b>{name.upper()}</b>\n<i>{title}</i>", parse_mode="HTML")
+                await callback.message.answer_photo(
+                    photo=photo_obj,
+                    caption=f"{icon} <b>{name.upper()}</b>\n<i>{title} ({exp})</i>",
+                    parse_mode="HTML"
+                )
                 await callback.message.answer(card_text, parse_mode="HTML", reply_markup=kb)
-        except Exception:
+        except Exception as e:
+            logger.warning("Rasm yuborishda xatolik: %s. Matn yuborilmoqda.", e)
             await callback.message.answer(card_text, parse_mode="HTML", reply_markup=kb)
     else:
         await callback.message.answer(card_text, parse_mode="HTML", reply_markup=kb)

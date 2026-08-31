@@ -265,12 +265,16 @@ async def view_unlocked_course_content(callback: CallbackQuery) -> None:
 
         if file_id:
             try:
-                if media_type == "video":
+                if media_type in ("video", "video_note"):
                     await callback.message.answer_video(video=file_id, caption=caption_text, parse_mode="HTML")
                 elif media_type == "audio":
                     await callback.message.answer_audio(audio=file_id, caption=caption_text, parse_mode="HTML")
+                elif media_type == "voice":
+                    await callback.message.answer_voice(voice=file_id, caption=caption_text, parse_mode="HTML")
                 elif media_type == "document":
                     await callback.message.answer_document(document=file_id, caption=caption_text, parse_mode="HTML")
+                elif media_type == "photo":
+                    await callback.message.answer_photo(photo=file_id, caption=caption_text, parse_mode="HTML")
                 else:
                     await callback.message.answer(caption_text, parse_mode="HTML")
             except Exception as e:
@@ -281,7 +285,7 @@ async def view_unlocked_course_content(callback: CallbackQuery) -> None:
                 f"📌 <b>{title}</b>\n"
                 f"━━━━━━━━━━━━━━━━━━━━\n"
                 f"{desc}\n\n"
-                f"<i>(Tezkor audio/video amaliyot) 🎧</i>"
+                f"<i>(Darslik materiali yoki qo'llanma) 📚</i>"
             )
             await callback.message.answer(card, parse_mode="HTML")
 

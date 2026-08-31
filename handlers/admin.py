@@ -1073,13 +1073,16 @@ async def handle_admin_media_upload(message: Message, state: FSMContext) -> None
         media_type = "audio"
     elif message.voice:
         file_id = message.voice.file_id
-        media_type = "audio"
+        media_type = "voice"
     elif message.video_note:
         file_id = message.video_note.file_id
-        media_type = "video"
+        media_type = "video_note"
     elif message.document:
         file_id = message.document.file_id
         media_type = "document"
+    elif message.photo:
+        file_id = message.photo[-1].file_id
+        media_type = "photo"
 
     if not file_id:
         await message.answer("⚠️ Iltimos, video, audio yoki fayl yuboring!")

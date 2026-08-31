@@ -52,7 +52,13 @@ BRAND_NAME = "SOKIN QALB"
 
 # Majburiy obuna va ijtimoiy tarmoqlar sozlamalari
 REQUIRED_CHANNEL_ID = os.getenv("REQUIRED_CHANNEL_ID", "@Sokin_Qalb_Furqat")
+if REQUIRED_CHANNEL_ID in ("@sokin_qalb_rasmiy", "sokin_qalb_rasmiy"):
+    REQUIRED_CHANNEL_ID = "@Sokin_Qalb_Furqat"
+
 REQUIRED_CHANNEL_URL = os.getenv("REQUIRED_CHANNEL_URL", "https://t.me/Sokin_Qalb_Furqat")
+if "sokin_qalb_rasmiy" in REQUIRED_CHANNEL_URL:
+    REQUIRED_CHANNEL_URL = "https://t.me/Sokin_Qalb_Furqat"
+
 REQUIRED_INSTAGRAM_URL = os.getenv("REQUIRED_INSTAGRAM_URL", "https://www.instagram.com/sokinqalb_tm?igsi=MTZyOGY0eDVnY25mdA==")
 REQUIRED_YOUTUBE_URL = os.getenv("REQUIRED_YOUTUBE_URL", "https://www.youtube.com/@Sokin_Qalb_Furqat")
 

@@ -10,6 +10,7 @@ from config import (
     REQUIRED_CHANNEL_ID,
     REQUIRED_CHANNEL_URL,
     REQUIRED_INSTAGRAM_URL,
+    REQUIRED_YOUTUBE_URL,
     is_admin,
 )
 from keyboards import main_menu_kb, referral_hub_kb, subscription_required_kb
@@ -39,7 +40,7 @@ async def cmd_start(message: Message, bot: Bot) -> None:
     # 1. Majburiy obunani tekshirish (/start bosilishi bilan)
     is_sub = await check_channel_subscription(bot, message.from_user.id, REQUIRED_CHANNEL_ID)
     if not is_sub:
-        kb = subscription_required_kb(REQUIRED_CHANNEL_URL, REQUIRED_INSTAGRAM_URL)
+        kb = subscription_required_kb(REQUIRED_CHANNEL_URL, REQUIRED_INSTAGRAM_URL, REQUIRED_YOUTUBE_URL)
         await message.answer(
             SUBSCRIPTION_REQUIRED_TEXT,
             parse_mode="HTML",

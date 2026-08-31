@@ -23,11 +23,12 @@ def main_menu_kb(is_admin: bool = False) -> InlineKeyboardMarkup:
     return kb.as_markup()
 
 
-def subscription_required_kb(channel_url: str, instagram_url: str) -> InlineKeyboardMarkup:
-    """Majburiy obuna (Telegram kanal va Instagram) klaviaturasi."""
+def subscription_required_kb(channel_url: str, instagram_url: str, youtube_url: str = "https://www.youtube.com/@Sokin_Qalb_Furqat") -> InlineKeyboardMarkup:
+    """Majburiy obuna (Telegram kanal, Instagram va YouTube) klaviaturasi."""
     kb = InlineKeyboardBuilder()
     kb.button(text="📢 1. Telegram kanal", url=channel_url)
     kb.button(text="📸 2. Instagram sahifa", url=instagram_url)
+    kb.button(text="▶️ 3. YouTube kanal", url=youtube_url)
     kb.button(text="✅ Tasdiqlash", callback_data="check_subscription")
     kb.adjust(1)
     return kb.as_markup()

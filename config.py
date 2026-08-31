@@ -50,11 +50,12 @@ DAILY_CHECKIN_TIME = os.getenv("DAILY_CHECKIN_TIME", "20:00")
 FOUNDER_NAME = "Bagbekov Furqat"
 BRAND_NAME = "SOKIN QALB"
 
-# Majburiy obuna sozlamalari (Telegram kanal va Instagram)
-REQUIRED_CHANNEL_ID = os.getenv("REQUIRED_CHANNEL_ID", "@sokin_qalb_rasmiy")
-REQUIRED_CHANNEL_URL = os.getenv("REQUIRED_CHANNEL_URL", "https://t.me/sokin_qalb_rasmiy")
+# Majburiy obuna va ijtimoiy tarmoqlar sozlamalari
+REQUIRED_CHANNEL_ID = os.getenv("REQUIRED_CHANNEL_ID", "@Sokin_Qalb_Furqat")
+REQUIRED_CHANNEL_URL = os.getenv("REQUIRED_CHANNEL_URL", "https://t.me/Sokin_Qalb_Furqat")
 REQUIRED_INSTAGRAM_URL = os.getenv("REQUIRED_INSTAGRAM_URL", "https://www.instagram.com/sokinqalb_tm?igsi=MTZyOGY0eDVnY25mdA==")
+REQUIRED_YOUTUBE_URL = os.getenv("REQUIRED_YOUTUBE_URL", "https://www.youtube.com/@Sokin_Qalb_Furqat")
 
 # Diagnostika yakunida yoki har qanday xavotirli javobda ko'rsatiladigan
-# inson mutaxassisi bilan bog'lanish ma'lumoti (o'zgartiring).
+# inson mutaxassisi bilan bog'lanish ma'lumoti.
 CLINIC_CONTACT = "@sokinqalb_admin"

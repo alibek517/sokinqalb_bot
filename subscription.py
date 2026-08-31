@@ -9,6 +9,7 @@ from config import (
     REQUIRED_CHANNEL_ID,
     REQUIRED_CHANNEL_URL,
     REQUIRED_INSTAGRAM_URL,
+    REQUIRED_YOUTUBE_URL,
     is_admin,
 )
 from keyboards import subscription_required_kb
@@ -72,7 +73,7 @@ class SubscriptionMiddleware(BaseMiddleware):
             return await handler(event, data)
 
         # Foydalanuvchi obuna bo'lmagan — kirishni to'xtatib, tugmalarni chiqaramiz
-        kb = subscription_required_kb(REQUIRED_CHANNEL_URL, REQUIRED_INSTAGRAM_URL)
+        kb = subscription_required_kb(REQUIRED_CHANNEL_URL, REQUIRED_INSTAGRAM_URL, REQUIRED_YOUTUBE_URL)
 
         if isinstance(event, Message):
             await event.answer(

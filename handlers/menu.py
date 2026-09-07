@@ -392,9 +392,9 @@ async def start_four_pillars(callback: CallbackQuery, state: FSMContext) -> None
     text = (
         "⚖️ <b>SOKIN QAYDLAR — 4 TA HAYOTIY SOHANI CHUQUR MONITORING QILISH</b> 🌿\n"
         "━━━━━━━━━━━━━━━━━━━━\n"
-        "<i>Har bir sohaga (Moliya, Ruhiyat, Tana, Munosabatlar) 5 tadan (jami 20 ta) maxsus savollar "
-        "orqali sizning imkoniyatlaringiz, o'zgarishlaringiz va to'siqlaringiz chuqur aniqlanadi.</i>\n\n"
-        f"❓ <b>1-savol (Jami 20 tadan):</b>\n{q_text}"
+        "<i>Har bir sohaga (Moliya, Ruhiyat, Tana, Munosabatlar) 1 tadan (jami 4 ta) aniq savol "
+        "orqali 2 daqiqada sizning haftalik holatingiz, o'zgarishlaringiz va imkoniyatlaringiz tahlil qilinadi.</i>\n\n"
+        f"❓ <b>1-savol (Jami 4 tadan):</b>\n{q_text}"
     )
     await callback.message.answer(text, parse_mode="HTML", reply_markup=dynamic_four_pillars_options_kb(options))
     await callback.answer()
@@ -464,7 +464,7 @@ async def _process_next_four_pillars_step(message, state: FSMContext, from_user,
         step_count=step_count,
     )
 
-    is_finished = (step_res.get("is_finished") and step_count >= 20) or step_count >= 20
+    is_finished = (step_res.get("is_finished") and step_count >= 4) or step_count >= 4
 
     if not is_finished:
         next_q = step_res.get("question", "Keyingi holat bo'yicha hislaringiz:")
@@ -483,14 +483,14 @@ async def _process_next_four_pillars_step(message, state: FSMContext, from_user,
         )
         text = (
             f"✅ <i>Javobingiz tahlilga kiritildi.</i>\n\n"
-            f"❓ <b>{step_count + 1}-savol (Jami 20 tadan):</b>\n{next_q}"
+            f"❓ <b>{step_count + 1}-savol (Jami 4 tadan):</b>\n{next_q}"
         )
         await message.answer(text, parse_mode="HTML", reply_markup=dynamic_four_pillars_options_kb(next_options))
     else:
         # Yakuniy hisob-kitob (AI o'zi aniqlagan ballar va tahlillar)
-        fin = max(1, min(10, step_res.get("financial_score", 6)))
+        fin = max(1, min(10, step_res.get("financial_score", 7)))
         men = max(1, min(10, step_res.get("mental_score", 7)))
-        phys = max(1, min(10, step_res.get("physical_score", 6)))
+        phys = max(1, min(10, step_res.get("physical_score", 7)))
         rel = max(1, min(10, step_res.get("relationship_score", 7)))
 
         prev_pillars = await db.get_latest_four_pillars(user["id"])
@@ -510,28 +510,28 @@ async def _process_next_four_pillars_step(message, state: FSMContext, from_user,
         men_an = step_res.get("mental_analysis", "Ruhiy va emotsional barqarorlik, o'ziga ishonch tahlili.")
         phys_an = step_res.get("physical_analysis", "Tana quvvati, uyqu va asab tizimi imkoniyatlari tahlili.")
         rel_an = step_res.get("relationship_analysis", "Munosabatlar, oilaviy muhit va shaxsiy chegaralar tahlili.")
-        critique = step_res.get("overall_critique", "20 ta savol tahlili asosida hayotiy sohalar uyg'unligi belgilandi.")
+        critique = step_res.get("overall_critique", "4 ta soha tahlili asosida hayotiy sohalar uyg'unligi belgilandi.")
 
         roadmap = step_res.get("roadmap_to_10", [])
         roadmap_text = "\n".join(f"• {r}" for r in roadmap) if roadmap else "• Barcha jabhalarda kichik intizomiy qadamlar"
 
         response_text = (
-            "⚖️ <b>4 TA HAYOTIY SOHANGIZNING 20 TA SAVOL ASOSIDAGI CHUQUR NATIJASI</b> 🌿\n"
+            "⚖️ <b>4 TA HAYOTIY SOHANGIZNING HAFTALIK CHUQUR MONITORING NATIJASI</b> 🌿\n"
             "━━━━━━━━━━━━━━━━━━━━\n\n"
             f"{pillars_card}\n\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "🔍 <b>4 TA SOHANING ALOHIDA CHUQUR TAHLILI VA IMKONIYATLARI:</b>\n\n"
-            f"💰 <b>1. Moliyaviy Holat & Pul Imkoniyatlari (5 ta savol tahlili):</b>\n<i>{fin_an}</i>\n\n"
-            f"🧘 <b>2. Ruhiy & Emotsional Holat, O'ziga Ishonch (5 ta savol tahlili):</b>\n<i>{men_an}</i>\n\n"
-            f"🏃 <b>3. Jismoniy Salomatlik, Uyqu & Quvvat (5 ta savol tahlili):</b>\n<i>{phys_an}</i>\n\n"
-            f"👥 <b>4. Munosabatlar, Oila & Chegaralar (5 ta savol tahlili):</b>\n<i>{rel_an}</i>\n\n"
+            f"💰 <b>1. Moliyaviy Holat & Pul Imkoniyatlari:</b>\n<i>{fin_an}</i>\n\n"
+            f"🧘 <b>2. Ruhiy & Emotsional Holat, O'ziga Ishonch:</b>\n<i>{men_an}</i>\n\n"
+            f"🏃 <b>3. Jismoniy Salomatlik, Uyqu & Quvvat:</b>\n<i>{phys_an}</i>\n\n"
+            f"👥 <b>4. Munosabatlar, Oila & Chegaralar:</b>\n<i>{rel_an}</i>\n\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             f"🧑‍⚕️ <b>Furqat Bag'ibekov Yordamchisi Shaxsiy Xulosasi:</b>\n{critique}\n\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             f"🎯 <b>10 DAN 10 GA CHIQARISH VA IMKONIYATLARNI OCHISH YO'L XARITASI:</b>\n"
             f"{roadmap_text}\n\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "<i>Ushbu tashxis 4 ta sohaga berilgan 20 ta chuqur savollarga bergan javoblaringiz asosida tuzildi 🌿</i>"
+            "<i>🎉 Haftalik qaydingiz muvaffaqiyatli saqlandi! Keyingi qayd 7 kundan so'ng o'tkaziladi 🌿</i>"
         )
         await message.answer(response_text, parse_mode="HTML", reply_markup=sokin_qaydlar_hub_kb())
 

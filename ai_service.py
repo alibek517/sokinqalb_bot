@@ -789,19 +789,19 @@ async def generate_adaptive_four_pillars_step(
     checkins: Optional[list[dict]] = None,
     step_count: int = 0,
 ) -> dict:
-    """Foydalanuvchining javoblariga qarab 4 ta sohaga 5 tadan (jami 20 ta) chuqur savol berish yoki 4 ustun tahlilini chiqarish."""
-    # Qaysi soha va nechanchi savolligi
-    if step_count < 5:
-        pillar_name = f"💰 1-SOHA: MOLIYAVIY HOLAT ({step_count + 1}/5-savol | Jami {step_count + 1}/20)"
+    """Foydalanuvchining javoblariga qarab 4 ta hayotiy sohaga 1 tadan (jami 4 ta) chuqur savol berish yoki 4 ustun tahlilini chiqarish."""
+    # Qaysi soha va nechanchi savolligi (Jami 4 ta soha)
+    if step_count == 0:
+        pillar_name = "💰 1-SOHA: MOLIYAVIY HOLAT (1/4-savol)"
         pillar_focus = "Moliyaviy psixologiya va pul imkoniyatlari"
-    elif step_count < 10:
-        pillar_name = f"🧘 2-SOHA: RUHIYAT VA EMOTSIYALAR ({step_count - 4}/5-savol | Jami {step_count + 1}/20)"
+    elif step_count == 1:
+        pillar_name = "🧘 2-SOHA: RUHIYAT VA EMOTSIYALAR (2/4-savol)"
         pillar_focus = "Ruhiy va emotsional barqarorlik, o'ziga ishonch"
-    elif step_count < 15:
-        pillar_name = f"🏃 3-SOHA: JISMONIY SALOMATLIK ({step_count - 9}/5-savol | Jami {step_count + 1}/20)"
+    elif step_count == 2:
+        pillar_name = "🏃 3-SOHA: JISMONIY SALOMATLIK (3/4-savol)"
         pillar_focus = "Tana quvvati, uyqu va psixosomatika"
     else:
-        pillar_name = f"👥 4-SOHA: MUNOSABATLAR VA CHEGARALAR ({step_count - 14}/5-savol | Jami {step_count + 1}/20)"
+        pillar_name = "👥 4-SOHA: MUNOSABATLAR VA CHEGARALAR (4/4-savol)"
         pillar_focus = "Munosabatlar, oila va shaxsiy chegaralar"
 
     content_lines = [
@@ -826,11 +826,11 @@ async def generate_adaptive_four_pillars_step(
         for idx, item in enumerate(history, 1):
             content_lines.append(f"{idx}-savol: {item.get('question', '')}\nJavob: {item.get('answer', '')}")
 
-    if step_count >= 20:
+    if step_count >= 4:
         content_lines.append(
-            "\nFoydalanuvchi 4 ta sohaning har biriga 5 tadan (jami 20 ta) savolga to'liq javob berdi. "
+            "\nFoydalanuvchi 4 ta sohaning (Moliya, Ruhiyat, Tana, Munosabatlar) har biriga 1 tadan (jami 4 ta) savolga to'liq javob berdi. "
             "Barcha berilgan javoblarni (ayniqsa, o'zi yozgan matnlarini) chuqur tahlil qil. "
-            "DIQQAT: Agar javoblar asosan ijobiy bo'lsa, ballarni 9-10/10 qilib qo'y va imkoniyatlarini yuksak bahola! "
+            "DIQQAT: Agar javoblar asosan ijobiy bo'lsa, ballarni 8-10/10 qilib qo'y va imkoniyatlarini yuksak bahola! "
             "Agar salbiy bo'lsa, mos pastroq ball qo'y. 'is_finished': true qilib 4 ta sohaning alohida tahlillarini qaytar."
         )
     else:

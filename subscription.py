@@ -146,15 +146,22 @@ class ReviewEnforcementMiddleware(BaseMiddleware):
         from keyboards import review_required_kb
 
         if isinstance(event, CallbackQuery):
-            if (
-                event.data
-                and (
-                    event.data.startswith("start_four_pillars")
-                    or event.data.startswith("fp_opt:")
-                    or event.data == "sokin_qaydlar"
-                    or event.data == "check_subscription"
-                )
-            ):
+            # Kunlik topshiriqlar, SOS, Kunlik checkin va Admin amallari hech qachon bloklanmaydi
+            allowed_prefixes = (
+                "start_four_pillars",
+                "fp_opt:",
+                "sokin_qaydlar",
+                "check_subscription",
+                "task_done:",
+                "task_postpone:",
+                "task_dream:",
+                "checkin_",
+                "daily_",
+                "sos",
+                "adm_",
+                "main_menu",
+            )
+            if event.data and any(event.data.startswith(p) for p in allowed_prefixes):
                 return await handler(event, data)
 
             await event.answer("⚠️ Avval haftalik qayddan o'ting!", show_alert=True)
@@ -173,6 +180,15 @@ class ReviewEnforcementMiddleware(BaseMiddleware):
             return None
 
         elif isinstance(event, Message):
+            # Muhim buyruqlar va SOS xabarlarni bloklamaymiz
+            if event.text and (
+                event.text.startswith("/start")
+                or event.text.startswith("/sos")
+                or event.text.startswith("/admin")
+                or event.text.startswith("/help")
+            ):
+                return await handler(event, data)
+
             await event.answer(
                 REVIEW_REQUIRED_TEXT,
                 parse_mode="HTML",

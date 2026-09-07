@@ -1248,7 +1248,7 @@ async def is_weekly_review_due(user_id: int) -> bool:
     today = date.today()
 
     if not latest:
-        # Agar foydalanuvchi botga kirganiga 7 kun bo'lgan bo'lsa yoki haftaning yakshanbasi bo'lsa
+        # Faqat foydalanuvchi botga kirganiga kamida 7 kun bo'lgan bo'lsa
         course_day = user.get("course_day", 1)
         if course_day >= 7:
             return True
@@ -1260,9 +1260,6 @@ async def is_weekly_review_due(user_id: int) -> bool:
                     return True
             except Exception:
                 pass
-        # Agar yakshanba kuni bo'lsa va 1 ta ham haftalik qayd bo'lmasa
-        if today.weekday() == 6:
-            return True
         return False
 
     rec_date_str = latest.get("recorded_date", "")
@@ -1271,11 +1268,8 @@ async def is_weekly_review_due(user_id: int) -> bool:
 
     try:
         rec_date = date.fromisoformat(rec_date_str)
-        # Agar oxirgi qaydga 7 yoki undan ko'p kun bo'lgan bo'lsa
+        # Faqat va faqat oxirgi topshirilgan sanadan beri kamida 7 kun o'tgan bo'lsagina
         if (today - rec_date).days >= 7:
-            return True
-        # Agar oxirgi qayd o'tgan haftaga tegishli bo'lsa va yangi hafta (dushanba-yakshanba) boshlangan bo'lsa
-        if rec_date.isocalendar()[:2] < today.isocalendar()[:2]:
             return True
     except Exception:
         return False
